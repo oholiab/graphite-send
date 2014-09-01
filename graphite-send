@@ -1,0 +1,48 @@
+#!/bin/bash
+
+args=(GRAPHITE GRAPHITE_PORT STAT VALUE)
+
+function usage {
+  echo "Usage: $0 -c CONFIG" >&2
+  echo "       $0 ${args[@]}" >&2
+}
+
+if [ "$1" = '-c' ]; then
+  # Assign all user variables other than VALUE from config
+  CONFIG=$2
+  if [ ! -f $CONFIG ]; then
+    echo "err: ${CONFIG} is not a valid file" >&2
+    usage
+    exit 1
+  fi
+  echo sourcing $CONFIG
+  source $CONFIG
+else
+  # Assign all user variables from arguments. To add arguments, just add
+  # to the list of args at the top before "VALUE" as the code below handles
+  # number of args and order.
+  count=0
+  for i in "${args[@]}"; do
+    ((count+=1))
+    eval $i="$(echo "\$$count")"
+  done
+fi
+
+
+# Validate that all necessary user variables are present.
+for i in "${args[@]}"; do
+  if [ "$(eval echo "\$$i")" = '' ] && [ ! "$i" = 'VALUE' ]; then
+    echo "err: $i is not set" >&2
+    usage
+    exit 1
+  fi
+done
+
+# Get VALUE from stdin if it has not been supplied already
+if [ "$VALUE" = '' ]; then
+  read VALUE < /dev/stdin
+fi
+
+DATE=$(date +%s)
+
+echo "${STAT} ${VALUE} ${DATE}" | nc $GRAPHITE $GRAPHITE_PORT
