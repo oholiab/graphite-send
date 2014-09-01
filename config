@@ -1,0 +1,3 @@
+GRAPHITE=localhost
+GRAPHITE_PORT=31337
+STAT=site_availability.is_rw
