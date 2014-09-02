@@ -1,6 +1,6 @@
 #!/bin/bash
 
-args=(GRAPHITE GRAPHITE_PORT STAT VALUE)
+args=(GRAPHITE_SERVER GRAPHITE_PORT STAT_NAME VALUE)
 
 function usage {
   printargs=("${args[@]}")
@@ -52,4 +52,4 @@ fi
 
 DATE=$(date +%s)
 
-echo "${STAT} ${VALUE} ${DATE}" | nc $GRAPHITE $GRAPHITE_PORT
+echo "${STAT_NAME} ${VALUE} ${DATE}" | nc $GRAPHITE_SERVER $GRAPHITE_PORT

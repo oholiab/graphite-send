@@ -15,7 +15,7 @@ How?
 ----
     $ ./graphite-send -h
     Usage: ./graphite-send -c CONFIG
-           ./graphite-send GRAPHITE GRAPHITE_PORT STAT [VALUE]
+           ./graphite-send GRAPHITE_PORT GRAPHITE_PORT STAT_NAME [VALUE]
 
 Pretty simple, to try it out without actually sending any metrics, clone the
 repository down and in a seperate session run
@@ -33,6 +33,12 @@ To run in CLI mode, you simply supply 3 positional arguments, which are the
 GRAPHITE_SERVER, GRAPHITE_PORT and STAT_NAME (which must be fully qualified)
 optionally followed by the VALUE for the statistic. If VALUE is not given on the
 command line then the script will wait for it on STDIN.
+
+So to test this in our example with the netcat process above:
+
+    ./graphite-send localhost 31337 some.stuff 1234
+
+graphite-send always adds the timestamp in itself from the system time.
 
 Hacking
 -------
