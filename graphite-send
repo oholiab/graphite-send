@@ -1,6 +1,14 @@
 #!/bin/bash
 
 args=(GRAPHITE_SERVER GRAPHITE_PORT STAT_NAME VALUE)
+case "$(uname)" in
+  "Darwin")
+    NC_OPTS="-w0"
+    ;;
+  "Linux")
+    NC_OPTS="-q0"
+    ;;
+esac
 
 function usage {
   printargs=("${args[@]}")
@@ -52,4 +60,4 @@ fi
 
 DATE=$(date +%s)
 
-echo "${STAT_NAME} ${VALUE} ${DATE}" | nc $GRAPHITE_SERVER $GRAPHITE_PORT
+echo "${STAT_NAME} ${VALUE} ${DATE}" | nc $NC_OPTS $GRAPHITE_SERVER $GRAPHITE_PORT
