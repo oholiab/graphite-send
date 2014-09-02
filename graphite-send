@@ -3,9 +3,16 @@
 args=(GRAPHITE GRAPHITE_PORT STAT VALUE)
 
 function usage {
+  printargs=("${args[@]}")
+  unset printargs[${#args[@]}-1]
   echo "Usage: $0 -c CONFIG" >&2
-  echo "       $0 ${args[@]}" >&2
+  echo "       $0 ${printargs[@]} [VALUE]" >&2
 }
+
+if [ "$1" = '-h' ]; then
+  usage
+  exit 0
+fi
 
 if [ "$1" = '-c' ]; then
   # Assign all user variables other than VALUE from config
