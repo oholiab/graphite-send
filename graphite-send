@@ -17,6 +17,15 @@ function usage {
   echo "       $0 ${printargs[@]} [VALUE]" >&2
 }
 
+function validate_stat_name {
+  local stat_regex='^[^\.][\.A-Za-z0-9_-]+[^\.]$'
+  echo $STAT_NAME | grep -E $stat_regex
+  if [ $? -ne 0 ]; then
+    echo "STAT_NAME must be a period delimeted list of strings matching [A-Za-z0-9_-]" >&2
+    exit 1
+  fi
+}
+
 if [ "$1" = '-h' ]; then
   usage
   exit 0
@@ -53,6 +62,8 @@ for i in "${args[@]}"; do
   fi
 done
 
+validate_stat_name
+
 # Get VALUE from stdin if it has not been supplied already
 if [ "$VALUE" = '' ]; then
   read VALUE < /dev/stdin
@@ -61,3 +72,10 @@ fi
 DATE=$(date +%s)
 
 echo "${STAT_NAME} ${VALUE} ${DATE}" | nc $NC_OPTS $GRAPHITE_SERVER $GRAPHITE_PORT
+
+nc_exit=$?
+
+if [ $nc_exit -ne 0 ]; then
+  echo "nc exited with status ${nc_exit}" >&2
+fi
+exit $nc_exit
