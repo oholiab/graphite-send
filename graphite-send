@@ -19,7 +19,7 @@ function usage {
 
 function validate_stat_name {
   local stat_regex='^[^\.][\.A-Za-z0-9_-]+[^\.]$'
-  echo $STAT_NAME | grep -E $stat_regex
+  echo $STAT_NAME | grep -E $stat_regex >/dev/null
   if [ $? -ne 0 ]; then
     echo "STAT_NAME must be a period delimeted list of strings matching [A-Za-z0-9_-]" >&2
     exit 1
@@ -39,7 +39,6 @@ if [ "$1" = '-c' ]; then
     usage
     exit 1
   fi
-  echo sourcing $CONFIG
   source $CONFIG
 else
   # Assign all user variables from arguments. To add arguments, just add
