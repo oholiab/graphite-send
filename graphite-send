@@ -18,10 +18,22 @@ function usage {
 }
 
 function validate_stat_name {
-  local stat_regex='^[^\.][\.A-Za-z0-9_-]+[^\.]$'
+  local terminating_charset='[A-Za-z0-9]'
+  local charset='[\.A-Za-z0-9_-]'
+  local stat_regex="^${terminating_charset}${charset}+${terminating_charset}$"
   echo $STAT_NAME | grep -E $stat_regex >/dev/null
   if [ $? -ne 0 ]; then
     echo "STAT_NAME must be a period delimeted list of strings matching [A-Za-z0-9_-]" >&2
+    exit 1
+  fi
+}
+
+function validate_value {
+  # match int or float only
+  local number_regex='^[0-9]+[\.]{0,1}[0-9]*[^\.]$'
+  echo $VALUE | grep -E $number_regex >/dev/null
+  if [ $? -ne 0 ]; then
+    echo "VALUE must be an integer or a float" >&2
     exit 1
   fi
 }
@@ -67,6 +79,8 @@ validate_stat_name
 if [ "$VALUE" = '' ]; then
   read VALUE < /dev/stdin
 fi
+
+validate_value
 
 DATE=$(date +%s)
 
