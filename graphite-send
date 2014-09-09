@@ -30,7 +30,7 @@ function validate_stat_name {
 
 function validate_value {
   # match int or float only
-  local number_regex='^[0-9]+[\.]{0,1}[0-9]*[^\.]$'
+  local number_regex='^[0-9]+([\.][0-9]+)?$'
   echo $VALUE | grep -E $number_regex >/dev/null
   if [ $? -ne 0 ]; then
     echo "VALUE must be an integer or a float" >&2
